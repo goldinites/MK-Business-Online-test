@@ -51,9 +51,7 @@ class Api {
 
         for (const param of params) {
             if (object[param]) {
-                const preparedParam = String(object[param]).replaceAll(' ', '%20'); // если встречаем пробелы, заменяем на %20
-
-                result += `/${preparedParam}`;
+                result += `/${encodeURIComponent(object[param])}`;
             }
         }
 
