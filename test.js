@@ -7,6 +7,10 @@
     5. Разместите код в гите и пришлите ссылку
 */
 
+const isEmptyObject = (obj) => {
+    return !!Object.keys(obj).length;
+}
+
 /**
  * Класс для работы с API
  *
@@ -18,6 +22,59 @@ class Api {
 
     }
 
+    /**
+     * Возвращает статичную часть из шаблона template
+     *
+     * @author        Dmitrii Babich
+     * @version       v.1.0 (15/07/2025)
+     * @param        {string} template
+     * @return        {string}
+     */
+    get_url_static_part(template)
+    {
+        return template.split('/').filter(part => {
+            return !part.startsWith('%') && !part.endsWith('%')
+        }).join('/') ?? '';
+    }
+
+    /**
+     * Возвращает список параметров из шаблона template
+     *
+     * @author        Dmitrii Babich
+     * @version       v.1.0 (15/07/2025)
+     * @param        {string} template
+     * @return        {string[]}
+     */
+    get_url_params(template)
+    {
+        return template.split('/').filter(part => {
+            return part.startsWith('%') && part.endsWith('%')
+        }).map((part => {
+            return part.replaceAll('%', '')
+        })) ?? []
+    }
+
+    /**
+     * Заполняет параметры данными из объекта
+     *
+     * @author        Dmitrii Babich
+     * @version       v.1.0 (15/07/2025)
+     * @param        {object} object
+     * @param        {string[]} params
+     * @return        {string}
+     */
+    prepare_url_parameters(object, params)
+    {
+        const result = []
+
+        for (const param of params) {
+            if (object[param]) {
+                result.push(encodeURIComponent(object[param]));
+            }
+        }
+
+        return result.join('/')
+    }
 
     /**
      * Заполняет строковый шаблон template данными из объекта object
@@ -28,34 +85,21 @@ class Api {
      * @param        {string} template
      * @return        {string}
      */
-    get_api_path(object, template) {
-        let result = '';
-        const templateParts = template.split('/');
-        const staticPart = templateParts.filter(part => { // отделяем статическую часть url
-            return !part.startsWith('%') && !part.endsWith('%')
-        }).join('/');
-
-        if (staticPart) {
-            result += staticPart;
+    get_api_path(object, template)
+    {
+        if (!template || isEmptyObject(object)) {
+            return ''
         }
 
-        const params = templateParts.filter(part => { // фильтруем параметры, удаляем знак %
-            return part.startsWith('%') && part.endsWith('%')
-        }).map((part => {
-            return part.replaceAll('%', '')
-        }));
+        let result = this.get_url_static_part(template);
+
+        const params = this.get_url_params(template)
 
         if (!params.length) {
             return result;
         }
 
-        for (const param of params) {
-            if (object[param]) {
-                result += `/${encodeURIComponent(object[param])}`;
-            }
-        }
-
-        /* Здесь ваш код */
+        result += this.prepare_url_parameters(object, params)
 
         return result;
     }
