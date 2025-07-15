@@ -30,7 +30,7 @@ class Api {
      * @param        {string} template
      * @return        {string}
      */
-    get_url_static_part(template)
+    #get_url_static_part(template)
     {
         return template.split('/').filter(part => {
             return !part.startsWith('%') && !part.endsWith('%')
@@ -45,7 +45,7 @@ class Api {
      * @param        {string} template
      * @return        {string[]}
      */
-    get_url_params(template)
+    #get_url_params(template)
     {
         return template.split('/').filter(part => {
             return part.startsWith('%') && part.endsWith('%')
@@ -63,7 +63,7 @@ class Api {
      * @param        {string[]} params
      * @return        {string}
      */
-    prepare_url_params(object, params)
+    #prepare_url_params(object, params)
     {
         const result = []
 
@@ -87,20 +87,19 @@ class Api {
      */
     get_api_path(object, template)
     {
-        console.log(isEmptyObject(object));
         if (!template || isEmptyObject(object)) {
             return ''
         }
 
-        let result = this.get_url_static_part(template);
+        let result = this.#get_url_static_part(template);
 
-        const params = this.get_url_params(template)
+        const params = this.#get_url_params(template)
 
         if (!params.length) {
             return result;
         }
 
-        result += this.prepare_url_params(object, params)
+        result += this.#prepare_url_params(object, params)
 
         return result;
     }
