@@ -63,7 +63,7 @@ class Api {
      * @param        {string[]} params
      * @return        {string}
      */
-    prepare_url_parameters(object, params)
+    prepare_url_params(object, params)
     {
         const result = []
 
@@ -100,7 +100,7 @@ class Api {
             return result;
         }
 
-        result += this.prepare_url_parameters(object, params)
+        result += this.prepare_url_params(object, params)
 
         return result;
     }
