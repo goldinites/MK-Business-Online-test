@@ -31,7 +31,7 @@ class Api {
     get_api_path(object, template) {
         let result = '';
         const templateParts = template.split('/');
-        const staticPart = templateParts.filter(part => {
+        const staticPart = templateParts.filter(part => { // отделяем статическую часть url
             return !part.startsWith('%') && !part.endsWith('%')
         }).join('/');
 
@@ -39,7 +39,7 @@ class Api {
             result += staticPart;
         }
 
-        const params = templateParts.filter(part => {
+        const params = templateParts.filter(part => { // фильтруем параметры, удаляем знак %
             return part.startsWith('%') && part.endsWith('%')
         }).map((part => {
             return part.replaceAll('%', '')
@@ -51,7 +51,9 @@ class Api {
 
         for (const param of params) {
             if (object[param]) {
-                result += `/${object[param]}`;
+                const preparedParam = String(object[param]).replaceAll(' ', '%20'); // если встречаем пробелы, заменяем на %20
+
+                result += `/${preparedParam}`;
             }
         }
 
