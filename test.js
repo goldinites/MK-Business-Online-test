@@ -87,6 +87,7 @@ class Api {
      */
     get_api_path(object, template)
     {
+        console.log(isEmptyObject(object));
         if (!template || isEmptyObject(object)) {
             return ''
         }
