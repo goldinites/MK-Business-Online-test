@@ -8,7 +8,7 @@
 */
 
 const isEmptyObject = (obj) => {
-    return !!Object.keys(obj).length;
+    return typeof obj === 'object' && !Object.keys(obj).length;
 }
 
 /**
